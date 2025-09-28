@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo, useCallback } from 'react';
 import type { Product } from '../types';
 
 interface ProductCardProps {
@@ -6,7 +6,7 @@ interface ProductCardProps {
   onPurchaseRequest: (product: Product) => void;
 }
 
-const StarRating: React.FC<{ ratingText: string }> = ({ ratingText }) => {
+const StarRating: React.FC<{ ratingText: string }> = memo(({ ratingText }) => {
   const ratingMatch = ratingText.match(/(\d\.\d)\/5/);
   const rating = ratingMatch ? parseFloat(ratingMatch[1]) : 0;
   const totalStars = 5;
@@ -40,14 +40,18 @@ const StarRating: React.FC<{ ratingText: string }> = ({ ratingText }) => {
       <span className="text-gray-600 text-sm font-medium">{ratingText}</span>
     </div>
   );
-};
+});
 
 
-const ProductCard: React.FC<ProductCardProps> = ({ product, onPurchaseRequest }) => {
+const ProductCard: React.FC<ProductCardProps> = memo(({ product, onPurchaseRequest }) => {
+  const handlePurchaseRequest = useCallback(() => {
+    onPurchaseRequest(product);
+  }, [product, onPurchaseRequest]);
+
   return (
     <div className="card hover-lift overflow-hidden flex flex-col h-full animate-scale-in">
       {/* 상품 이미지 */}
-      <div className="relative w-full h-56 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center overflow-hidden">
+      <div className="relative w-full h-48 md:h-56 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center overflow-hidden">
         {product.imageUrl ? (
           <img
             src={product.imageUrl}
@@ -64,17 +68,17 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onPurchaseRequest })
         )}
 
         {/* 카테고리 배지 */}
-        <div className="absolute top-3 left-3">
-          <span className="bg-white/90 backdrop-blur-sm text-primary-700 text-xs font-bold px-3 py-1 rounded-full shadow-md border border-white/20">
+        <div className="absolute top-2 md:top-3 left-2 md:left-3">
+          <span className="bg-white/90 backdrop-blur-sm text-primary-700 text-xs font-bold px-2 md:px-3 py-1 rounded-full shadow-md border border-white/20">
             {product.category}
           </span>
         </div>
       </div>
 
       {/* 상품 정보 */}
-      <div className="p-6 flex flex-col flex-grow space-y-4">
+      <div className="p-4 md:p-6 flex flex-col flex-grow space-y-3 md:space-y-4">
         {/* 상품명 */}
-        <h3 className="font-bold text-gray-900 text-xl leading-tight line-clamp-2">
+        <h3 className="font-bold text-gray-900 text-lg md:text-xl leading-tight line-clamp-2">
           {product.name}
         </h3>
 
@@ -87,32 +91,33 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onPurchaseRequest })
 
         {/* 가격 */}
         <div className="flex items-baseline space-x-2">
-          <span className="text-3xl font-bold gradient-text">{product.price}</span>
-          <span className="text-sm text-gray-500 line-through">정가 대비 할인</span>
+          <span className="text-2xl md:text-3xl font-bold gradient-text">{product.price}</span>
+          <span className="text-xs md:text-sm text-gray-500 line-through">정가 대비 할인</span>
         </div>
 
         {/* AI 추천 이유 */}
-        <div className="bg-gradient-to-r from-primary-50 to-primary-100 p-4 rounded-xl border border-primary-200 flex-grow">
+        <div className="bg-gradient-to-r from-primary-50 to-primary-100 p-3 md:p-4 rounded-xl border border-primary-200 flex-grow">
           <div className="flex items-center space-x-2 mb-2">
-            <svg className="w-5 h-5 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-4 h-4 md:w-5 md:h-5 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
             </svg>
-            <h4 className="font-bold text-sm text-primary-800">AI 맞춤 추천 이유</h4>
+            <h4 className="font-bold text-xs md:text-sm text-primary-800">AI 맞춤 추천 이유</h4>
           </div>
-          <p className="text-gray-700 text-sm leading-relaxed">{product.description}</p>
+          <p className="text-gray-700 text-xs md:text-sm leading-relaxed">{product.description}</p>
         </div>
 
         {/* 구매 요청 버튼 */}
         <div className="pt-2">
           <button
-            onClick={() => onPurchaseRequest(product)}
-            className="btn-primary hover-lift w-full py-4 text-base font-bold relative overflow-hidden group"
+            onClick={handlePurchaseRequest}
+            className="btn-primary hover-lift w-full py-3 md:py-4 text-sm md:text-base font-bold relative overflow-hidden group touch-target"
           >
             <span className="relative z-10 flex items-center justify-center space-x-2">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
               </svg>
-              <span>구매 대행 요청</span>
+              <span className="hidden sm:inline">구매 대행 요청</span>
+              <span className="sm:hidden">구매 요청</span>
             </span>
             <div className="absolute inset-0 bg-gradient-to-r from-primary-700 to-primary-800 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></div>
           </button>
@@ -136,6 +141,6 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onPurchaseRequest })
       </div>
     </div>
   );
-};
+});
 
 export default ProductCard;

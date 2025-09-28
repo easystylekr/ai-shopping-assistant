@@ -8,6 +8,10 @@ import InputBar from './components/InputBar';
 import AuthModal from './components/AuthModal';
 import AdminLogin from './components/AdminLogin';
 import AdminDashboard from './components/AdminDashboard';
+import PWAInstallPrompt from './components/PWAInstallPrompt';
+import IntroScreen from './components/IntroScreen';
+import LoginForm from './components/LoginForm';
+import SignupForm from './components/SignupForm';
 
 /**
  * Fetches a product image by generating it on-the-fly using an AI model.
@@ -64,7 +68,10 @@ const parseProductFromResponse = (text: string): Omit<Product, 'imageUrl'> | nul
 };
 
 
+type AppState = 'intro' | 'login' | 'signup' | 'chat';
+
 const App: React.FC = () => {
+  const [appState, setAppState] = useState<AppState>('intro');
   const [messages, setMessages] = useState<Message[]>([
     {
       id: 1,
@@ -165,6 +172,7 @@ const App: React.FC = () => {
     const newUser = { email };
     setUser(newUser);
     setShowAuthModal(false);
+    setAppState('chat');
 
     // 사용자 정보를 관리자 시스템에 저장
     AdminService.saveUser(newUser);
@@ -177,14 +185,43 @@ const App: React.FC = () => {
     setMessages(prev => [...prev, welcomeMessage]);
   };
 
-  const handleLogout = () => {
-    setUser(null);
-     const logoutMessage: Message = {
+  const handleSignup = (userData: {
+    email: string;
+    name: string;
+    phone?: string;
+    preferences?: string[];
+  }) => {
+    const newUser = {
+      email: userData.email,
+      name: userData.name,
+      phone: userData.phone,
+      preferences: userData.preferences
+    };
+    setUser(newUser);
+    setAppState('chat');
+
+    // 사용자 정보를 관리자 시스템에 저장
+    AdminService.saveUser(newUser);
+
+    const welcomeMessage: Message = {
         id: Date.now(),
         role: 'system',
-        content: `로그아웃되었습니다. 다음에 또 만나요!`
+        content: `${userData.name}님, 회원가입을 축하드립니다! 🎉 AI 쇼핑 어시스턴트가 당신만을 위한 완벽한 상품을 찾아드리겠습니다.`
     };
-    setMessages(prev => [prev[0], logoutMessage]);
+    setMessages(prev => [...prev, welcomeMessage]);
+  };
+
+  const handleLogout = () => {
+    setUser(null);
+    setAppState('intro');
+    // 메시지 초기화
+    setMessages([
+      {
+        id: 1,
+        role: 'ai',
+        content: '안녕하세요! AI 쇼핑 구매 대행 서비스입니다. 어떤 상품을 찾아드릴까요? 당신에게 딱 맞는 최고의 상품 하나를 찾아드리겠습니다.',
+      },
+    ]);
   };
 
   // 관리자 로그인 처리
@@ -217,17 +254,117 @@ const App: React.FC = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
+  // Render different screens based on app state
+  if (appState === 'intro') {
+    return (
+      <>
+        <IntroScreen onGetStarted={() => setAppState('login')} />
+        <PWAInstallPrompt />
+      </>
+    );
+  }
+
+  if (appState === 'login') {
+    return (
+      <>
+        <LoginForm
+          onLogin={handleLogin}
+          onSwitchToSignup={() => setAppState('signup')}
+          onBack={() => setAppState('intro')}
+        />
+        <PWAInstallPrompt />
+      </>
+    );
+  }
+
+  if (appState === 'signup') {
+    return (
+      <>
+        <SignupForm
+          onSignup={handleSignup}
+          onSwitchToLogin={() => setAppState('login')}
+          onBack={() => setAppState('intro')}
+        />
+        <PWAInstallPrompt />
+      </>
+    );
+  }
+
+  // Chat interface (appState === 'chat')
   return (
-    <div className="flex flex-col h-screen font-sans bg-gray-50">
-      <Header user={user} onLogin={() => setShowAuthModal(true)} onLogout={handleLogout} />
-      <ChatWindow
-        messages={messages}
-        isLoading={isLoading}
-        onPurchaseRequest={handlePurchaseRequest}
-        user={user}
-        onLogin={() => setShowAuthModal(true)}
-      />
-      {user && <InputBar onSendMessage={handleSendMessage} isLoading={isLoading} />}
+    <div className="mobile-app-container md:flex md:flex-col md:h-screen font-sans bg-gray-50">
+      {/* Mobile Header */}
+      <div className="mobile-header md:hidden">
+        <div className="flex items-center justify-between w-full">
+          {/* Logo and Title */}
+          <div className="flex items-center space-x-3">
+            <div className="w-8 h-8 bg-gradient-to-r from-primary-500 to-primary-600 rounded-lg flex items-center justify-center">
+              <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+              </svg>
+            </div>
+            <span className="text-lg font-bold text-gray-900">AI 쇼핑</span>
+          </div>
+
+          {/* User Actions */}
+          <div className="flex items-center space-x-2">
+            {user && (
+              <>
+                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                <button
+                  onClick={handleLogout}
+                  className="mobile-touch-target text-gray-600"
+                  title="로그아웃"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                  </svg>
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Desktop Header */}
+      <div className="hidden md:block">
+        <Header user={user} onLogin={() => setAppState('login')} onLogout={handleLogout} />
+      </div>
+
+      {/* Main Chat Area */}
+      <div className="mobile-main md:flex-1">
+        <ChatWindow
+          messages={messages}
+          isLoading={isLoading}
+          onPurchaseRequest={handlePurchaseRequest}
+          user={user}
+          onLogin={() => setAppState('login')}
+        />
+      </div>
+
+      {/* Mobile Input Area */}
+      {user && (
+        <div className="mobile-input-area md:hidden">
+          <InputBar
+            onSendMessage={handleSendMessage}
+            isLoading={isLoading}
+            lastAIMessage={messages.length > 0 && messages[messages.length - 1].role === 'ai' ? messages[messages.length - 1].content : undefined}
+          />
+        </div>
+      )}
+
+      {/* Desktop Input Bar */}
+      {user && (
+        <div className="hidden md:block">
+          <InputBar
+            onSendMessage={handleSendMessage}
+            isLoading={isLoading}
+            lastAIMessage={messages.length > 0 && messages[messages.length - 1].role === 'ai' ? messages[messages.length - 1].content : undefined}
+          />
+        </div>
+      )}
+
+      {/* Modals */}
       {showAuthModal && <AuthModal onLogin={handleLogin} onClose={() => setShowAuthModal(false)} />}
       {showAdminLogin && (
         <AdminLogin
@@ -240,6 +377,9 @@ const App: React.FC = () => {
           onClose={handleAdminClose}
         />
       )}
+
+      {/* PWA Install Prompt and Status */}
+      <PWAInstallPrompt />
     </div>
   );
 };

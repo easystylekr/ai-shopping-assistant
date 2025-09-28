@@ -3,9 +3,31 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛒</text></svg>" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
     <meta name="description" content="AI 기반 지능형 쇼핑 어시스턴트 - 채팅과 음성으로 상품을 추천받고 구매 대행을 요청하세요" />
     <title>AI Shopping Assistant</title>
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json" />
+
+    <!-- Apple Touch Icon -->
+    <link rel="apple-touch-icon" href="/pwa-icon-192.png" />
+
+    <!-- Meta Tags for PWA -->
+    <meta name="theme-color" content="#3b82f6" />
+    <meta name="background-color" content="#ffffff" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="AI 쇼핑" />
+
+    <!-- Microsoft Tiles -->
+    <meta name="msapplication-TileColor" content="#3b82f6" />
+    <meta name="msapplication-TileImage" content="/pwa-icon-192.png" />
+
+    <!-- Preload Critical Resources -->
+    <link rel="preload" href="/index.css" as="style" />
+
     <link rel="stylesheet" href="/index.css">
   <script type="importmap">
 {

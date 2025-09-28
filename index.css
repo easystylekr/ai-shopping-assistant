@@ -129,6 +129,357 @@ select:focus-visible {
   border-color: var(--primary-500);
 }
 
+/* Mobile Web App Design System */
+:root {
+  /* Mobile-specific design tokens */
+  --mobile-header-height: 56px;
+  --mobile-nav-height: 60px;
+  --mobile-safe-area-top: env(safe-area-inset-top, 0px);
+  --mobile-safe-area-bottom: env(safe-area-inset-bottom, 0px);
+  --mobile-edge-padding: 16px;
+  --mobile-content-padding: 12px;
+
+  /* Mobile color palette */
+  --mobile-bg: #f8fafc;
+  --mobile-surface: #ffffff;
+  --mobile-surface-elevated: #ffffff;
+  --mobile-border: #e2e8f0;
+  --mobile-divider: #f1f5f9;
+
+  /* Mobile shadows */
+  --mobile-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --mobile-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --mobile-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  --mobile-shadow-header: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+}
+
+/* Mobile-First Base Styles */
+@media (max-width: 768px) {
+  /* Base mobile styling */
+  html, body {
+    font-size: 14px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-color: var(--mobile-bg);
+    overflow-x: hidden;
+  }
+
+  /* App Container */
+  .mobile-app-container {
+    min-height: 100vh;
+    min-height: 100dvh; /* Dynamic viewport height */
+    display: flex;
+    flex-direction: column;
+    background: var(--mobile-bg);
+    position: relative;
+  }
+
+  /* Mobile Header */
+  .mobile-header {
+    height: calc(var(--mobile-header-height) + var(--mobile-safe-area-top));
+    padding-top: var(--mobile-safe-area-top);
+    background: var(--mobile-surface);
+    border-bottom: 1px solid var(--mobile-border);
+    box-shadow: var(--mobile-shadow-header);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    padding-left: var(--mobile-edge-padding);
+    padding-right: var(--mobile-edge-padding);
+  }
+
+  /* Mobile Main Content */
+  .mobile-main {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: var(--mobile-content-padding);
+    background: var(--mobile-bg);
+  }
+
+  /* Mobile Input Area */
+  .mobile-input-area {
+    background: var(--mobile-surface);
+    border-top: 1px solid var(--mobile-border);
+    padding: var(--mobile-content-padding) var(--mobile-edge-padding);
+    padding-bottom: calc(var(--mobile-content-padding) + var(--mobile-safe-area-bottom));
+    position: sticky;
+    bottom: 0;
+    z-index: 50;
+  }
+
+  /* Mobile Card Design */
+  .mobile-card {
+    background: var(--mobile-surface);
+    border-radius: 12px;
+    border: 1px solid var(--mobile-border);
+    box-shadow: var(--mobile-shadow-sm);
+    overflow: hidden;
+  }
+
+  /* Mobile Message Bubbles */
+  .mobile-message-bubble {
+    max-width: 85%;
+    padding: 12px 16px;
+    border-radius: 20px;
+    margin: 4px 0;
+    word-wrap: break-word;
+  }
+
+  .mobile-message-user {
+    background: var(--primary-500);
+    color: white;
+    margin-left: auto;
+    border-bottom-right-radius: 6px;
+  }
+
+  .mobile-message-ai {
+    background: var(--mobile-surface);
+    color: var(--gray-800);
+    border: 1px solid var(--mobile-border);
+    border-bottom-left-radius: 6px;
+  }
+
+  /* Touch-Optimized Elements */
+  .mobile-touch-target {
+    min-height: 44px;
+    min-width: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Mobile Button Styles */
+  .mobile-btn {
+    height: 48px;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+    border: none;
+    cursor: pointer;
+  }
+
+  .mobile-btn-primary {
+    background: var(--primary-500);
+    color: white;
+  }
+
+  .mobile-btn-primary:active {
+    background: var(--primary-600);
+    transform: scale(0.98);
+  }
+
+  .mobile-btn-secondary {
+    background: var(--mobile-surface);
+    color: var(--gray-700);
+    border: 1px solid var(--mobile-border);
+  }
+
+  .mobile-btn-secondary:active {
+    background: var(--gray-50);
+    transform: scale(0.98);
+  }
+
+  /* Mobile Input Styles */
+  .mobile-input {
+    width: 100%;
+    height: 44px;
+    padding: 0 16px;
+    border: 1px solid var(--mobile-border);
+    border-radius: 12px;
+    background: var(--mobile-surface);
+    font-size: 16px; /* Prevents zoom on iOS */
+    -webkit-appearance: none;
+    appearance: none;
+  }
+
+  .mobile-input:focus {
+    outline: none;
+    border-color: var(--primary-500);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  }
+
+  /* Mobile Floating Action Button */
+  .mobile-fab {
+    position: fixed;
+    bottom: calc(80px + var(--mobile-safe-area-bottom));
+    right: 20px;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--primary-500);
+    color: white;
+    border: none;
+    box-shadow: var(--mobile-shadow-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    transition: all 0.3s ease;
+  }
+
+  .mobile-fab:active {
+    transform: scale(0.95);
+  }
+
+  /* Mobile Modal/Overlay */
+  .mobile-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    display: flex;
+    align-items: flex-end;
+  }
+
+  .mobile-modal-content {
+    width: 100%;
+    background: var(--mobile-surface);
+    border-radius: 16px 16px 0 0;
+    max-height: 90vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Mobile Specific Utilities */
+  .mobile-hide {
+    display: none !important;
+  }
+
+  .mobile-full-width {
+    width: 100%;
+  }
+
+  .mobile-text-center {
+    text-align: center;
+  }
+
+  /* Disable hover effects on mobile */
+  .hover-effect:hover {
+    transform: none;
+  }
+
+  /* Better touch feedback */
+  .mobile-pressable:active {
+    transform: scale(0.98);
+    opacity: 0.8;
+  }
+}
+
+/* Tablet Responsive Design */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .container {
+    max-width: 100%;
+    padding: 0 var(--space-lg);
+  }
+}
+
+/* Touch Device Optimizations */
+@media (hover: none) and (pointer: coarse) {
+  /* Remove hover effects on touch devices */
+  .hover-lift:hover {
+    transform: none;
+  }
+
+  /* Add touch feedback for interactive elements */
+  button:active,
+  .btn:active,
+  .touch-target:active {
+    transform: scale(0.98);
+    transition: transform 0.1s ease;
+  }
+
+  /* Increase touch targets */
+  .touch-target {
+    min-height: 48px;
+    min-width: 48px;
+  }
+
+  /* Improve tap highlights */
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  button, .btn {
+    -webkit-tap-highlight-color: rgba(59, 130, 246, 0.1);
+  }
+
+  /* Touch-specific interactions */
+  input:focus,
+  textarea:focus {
+    transform: scale(1.02);
+    transition: transform 0.2s ease;
+  }
+
+  /* Prevent text selection on buttons */
+  button, .btn {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+
+  /* Improve scrolling performance */
+  .overflow-y-auto {
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* Gesture Support */
+.swipe-indicator {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.swipe-active .swipe-indicator {
+  opacity: 1;
+}
+
+/* Loading states for touch interactions */
+.loading-touch {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+/* Better visual feedback for form elements */
+@media (max-width: 768px) {
+  input[type="text"]:focus,
+  input[type="email"]:focus,
+  textarea:focus {
+    border-width: 2px;
+    border-color: var(--primary-500);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  }
+
+  /* Prevent zoom on input focus */
+  input[type="text"],
+  input[type="email"],
+  textarea {
+    font-size: max(16px, 1rem);
+  }
+
+  /* Better spacing for touch */
+  .form-group {
+    margin-bottom: 1.5rem;
+  }
+
+  /* Improved button feedback */
+  button:active {
+    background: linear-gradient(135deg, var(--primary-600), var(--primary-700));
+  }
+}
+
 /* Button Styles */
 .btn-primary {
   background: linear-gradient(135deg, var(--primary-500), var(--primary-600));

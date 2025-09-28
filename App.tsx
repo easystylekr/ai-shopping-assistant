@@ -164,8 +164,14 @@ const App: React.FC = () => {
   return (
     <div className="flex flex-col h-screen font-sans bg-gray-50">
       <Header user={user} onLogin={() => setShowAuthModal(true)} onLogout={handleLogout} />
-      <ChatWindow messages={messages} isLoading={isLoading} onPurchaseRequest={handlePurchaseRequest} />
-      <InputBar onSendMessage={handleSendMessage} isLoading={isLoading} />
+      <ChatWindow
+        messages={messages}
+        isLoading={isLoading}
+        onPurchaseRequest={handlePurchaseRequest}
+        user={user}
+        onLogin={() => setShowAuthModal(true)}
+      />
+      {user && <InputBar onSendMessage={handleSendMessage} isLoading={isLoading} />}
       {showAuthModal && <AuthModal onLogin={handleLogin} onClose={() => setShowAuthModal(false)} />}
     </div>
   );

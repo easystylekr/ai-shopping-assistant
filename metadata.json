@@ -1,0 +1,7 @@
+{
+  "name": "Copy of AI Shopping Assistant",
+  "description": "An intelligent AI assistant that helps you find the perfect products through conversation. It searches the web, compares options, and provides personalized recommendations.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}

@@ -1,11 +1,14 @@
 import { GoogleGenAI } from "@google/genai";
 import type { Message } from '../types';
 
-if (!process.env.API_KEY) {
-  throw new Error("API_KEY environment variable not set");
+// Vite에서는 VITE_ 접두사가 필요하며, import.meta.env를 사용합니다
+const apiKey = import.meta.env.VITE_API_KEY || import.meta.env.API_KEY;
+
+if (!apiKey) {
+  throw new Error("API_KEY environment variable not set. Please set VITE_API_KEY or API_KEY.");
 }
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+const ai = new GoogleGenAI({ apiKey });
 
 const SYSTEM_INSTRUCTION = `You are an expert AI shopping purchase proxy for users in South Korea. Your primary goal is to find and recommend the single best product based on the user's request. You must be decisive and provide only one final choice.
 
